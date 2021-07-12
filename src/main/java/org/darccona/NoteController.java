@@ -106,6 +106,13 @@ public class NoteController {
                         if ((n == null) || (n.getFolder() != f2)) {
                             return "nope";
                         }
+                        NoteEntity n1 = noteRepository.findByStandingAndFolder_UserIs(true, user);
+                        if (n1 != null) {
+                            n1.setStanding(false);
+                            noteRepository.save(n1);
+                        }
+                        n.setStanding(true);
+                        noteRepository.save(n);
                         model.addAttribute("noteId", id2);
                         Set<NoteEntity> note = f2.getNote();
 
@@ -116,6 +123,11 @@ public class NoteController {
 
                         model.addAttribute("n", new RecordEntity(n.getName(), formatNow.format(n.getDate()), n.getRecord()));
                     } else {
+                        NoteEntity n1 = noteRepository.findByStandingAndFolder_UserIs(true, user);
+                        if (n1 != null) {
+                            n1.setStanding(false);
+                            noteRepository.save(n1);
+                        }
                         f2.setStanding(false);
                         d.setInput();
                         d.setNote();
@@ -134,6 +146,8 @@ public class NoteController {
                         noteList.sort(Comparator.comparing(NoteEntity::getName).thenComparing(NoteEntity::getDate));
 
                         model.addAttribute("note", noteList);
+                    } else {
+                        d.setDivNote();
                     }
                     d.setInput();
                 }
@@ -229,16 +243,26 @@ public class NoteController {
         if ((f2 == null) || (f2.getUser() != user)) {
             return "nope";
         }
+        NoteEntity n1 = noteRepository.findByStandingAndFolder_UserIs(true, user);
+        if (n1 != null) {
+            n1.setStanding(false);
+            noteRepository.save(n1);
+        }
+
+        DivEntity d = new DivEntity("EditFolder");
         Set<NoteEntity> note = f2.getNote();
-        List<NoteEntity> noteList = new ArrayList<>();
-        noteList.addAll(note);
-        noteList.sort(Comparator.comparing(NoteEntity::getName).thenComparing(NoteEntity::getDate));
-        model.addAttribute("note", noteList);
+        if (note.isEmpty()) {
+            d.setDivNote();
+        } else {
+            List<NoteEntity> noteList = new ArrayList<>();
+            noteList.addAll(note);
+            noteList.sort(Comparator.comparing(NoteEntity::getName).thenComparing(NoteEntity::getDate));
+            model.addAttribute("note", noteList);
+        }
 
+        model.addAttribute("d", d);
         model.addAttribute("n", new StringEntity(f2.getName()));
-
         model.addAttribute("userName", principal.getName());
-        model.addAttribute("d", new DivEntity("EditFolder"));
         model.addAttribute("s", new StringEntity(""));
 
         return "notepad";
@@ -281,13 +305,24 @@ public class NoteController {
         if ((f2 == null) || (f2.getUser() != user)) {
             return "nope";
         }
-        Set<NoteEntity> note = f2.getNote();
-        List<NoteEntity> noteList = new ArrayList<>();
-        noteList.addAll(note);
-        noteList.sort(Comparator.comparing(NoteEntity::getName).thenComparing(NoteEntity::getDate));
-        model.addAttribute("note", noteList);
+        NoteEntity n1 = noteRepository.findByStandingAndFolder_UserIs(true, user);
+        if (n1 != null) {
+            n1.setStanding(false);
+            noteRepository.save(n1);
+        }
 
-        model.addAttribute("d", new DivEntity("AddNote"));
+        DivEntity d = new DivEntity("AddNote");
+        Set<NoteEntity> note = f2.getNote();
+        if (note.isEmpty()) {
+            d.setDivNote();
+        } else {
+            List<NoteEntity> noteList = new ArrayList<>();
+            noteList.addAll(note);
+            noteList.sort(Comparator.comparing(NoteEntity::getName).thenComparing(NoteEntity::getDate));
+            model.addAttribute("note", noteList);
+        }
+
+        model.addAttribute("d", d);
         model.addAttribute("s", new StringEntity(""));
         model.addAttribute("n", new RecordEntity("", "Сейчас", ""));
         model.addAttribute("nameFolder", new StringEntity(f2.getName()));
@@ -370,32 +405,45 @@ public class NoteController {
             f1.setStanding(false);
             folderRepository.save(f1);
         }
+        NoteEntity n1 = noteRepository.findByStandingAndFolder_UserIs(true, user);
+        if (n1 != null) {
+            n1.setStanding(false);
+            noteRepository.save(n1);
+        }
 
         DivEntity d = new DivEntity("Search");
         if (ss.equals("folderName")) {
             d.setNote();
-
-            List<FolderEntity> folderList = folderRepository.findByUserAndNameContaining(user, s.getName());
-            Collections.sort(folderList, FolderEntity.COMPARE_BY_NAME);
-            model.addAttribute("folder", folderList);
+            model.addAttribute("request", "групп c именем " + "\""+s.getName()+"\"");
+            List<FolderEntity> folderListSearch = folderRepository.findByUserAndNameContaining(user, s.getName());
+            if (folderListSearch.isEmpty()) {
+                d.setDivSearch();
+            } else {
+                Collections.sort(folderListSearch, FolderEntity.COMPARE_BY_NAME);
+                model.addAttribute("folderSearch", folderListSearch);
+            }
         } else {
-            Set<FolderEntity> folder = new HashSet<>();
-            folder.add(new FolderEntity("\""+s.getName()+"\""));
-            model.addAttribute("folder", folder);
             List<NoteEntity> noteList;
             if (ss.equals("noteName")) {
+                model.addAttribute("request", "записей с именем " + "\""+s.getName()+"\"");
                 noteList = noteRepository.findByNameContainingAndFolder_UserIs(s.getName(), user);
             } else {
+                model.addAttribute("request", "записей, содержащих " + "\""+s.getName()+"\"");
                 noteList = noteRepository.findByRecordContainingAndFolder_UserIs(s.getName(), user);
             }
             if (noteList.isEmpty()) {
-                d.setFolder();
-                d.setNote();
+                d.setDivSearch();
             } else {
                 noteList.sort(Comparator.comparing(NoteEntity::getName).thenComparing(NoteEntity::getDate));
                 model.addAttribute("note", noteList);
             }
         }
+
+        Set<FolderEntity> folder = user.getFolder();
+        List<FolderEntity> folderList = new ArrayList<>();
+        folderList.addAll(folder);
+        Collections.sort(folderList, FolderEntity.COMPARE_BY_NAME);
+        model.addAttribute("folder", folderList);
 
         model.addAttribute("d", d);
         model.addAttribute("s", new StringEntity(""));

@@ -23,12 +23,16 @@ public class NoteEntity {
     @Column(name = "RECORD")
     private String record;
 
+    @Column(name = "STANDING")
+    private boolean standing;
+
     public NoteEntity() { }
 
     public NoteEntity(String name, Date date, String record) {
         this.name = name;
         this.date = date;
         this.record = record;
+        this.standing = false;
     }
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -60,6 +64,12 @@ public class NoteEntity {
         return record;
     }
 
+    public void setStanding(boolean standing) {
+        this.standing = standing;
+    }
+    public boolean getStanding() {
+        return standing;
+    }
 
     public void setFolder(FolderEntity folder) {
         this.folder = folder;

@@ -14,4 +14,6 @@ public interface NoteRepository extends CrudRepository<NoteEntity, Long> {
 
     List<NoteEntity> findByNameContainingAndFolder_UserIs(String title, UserEntity user);
     List<NoteEntity> findByRecordContainingAndFolder_UserIs(String title, UserEntity user);
+
+    NoteEntity findByStandingAndFolder_UserIs(boolean standing, UserEntity user);
 }

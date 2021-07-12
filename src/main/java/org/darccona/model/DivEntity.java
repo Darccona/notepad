@@ -12,6 +12,9 @@ public class DivEntity {
     private boolean Note = true;
     private boolean Input = true;
 
+    private boolean DivSearch = true;
+    private boolean DivNote = true;
+
     public DivEntity(String div) {
         switch (div) {
             case "ShowNote": this.ShowNote = true; break;
@@ -58,6 +61,13 @@ public class DivEntity {
         return Input;
     }
 
+    public boolean getDivSearch() {
+        return DivSearch;
+    }
+    public boolean getDivNote() {
+        return DivNote;
+    }
+
     public void setFolder() {
         this.Folder = false;
     }
@@ -66,6 +76,13 @@ public class DivEntity {
     }
     public void setInput() {
         this.Input = false;
+    }
+
+    public void setDivSearch() {
+        this.DivSearch = false;
+    }
+    public void setDivNote() {
+        this.DivNote = false;
     }
 }
 

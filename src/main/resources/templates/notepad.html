@@ -13,7 +13,10 @@
         <div style="float: left">
             <a class="navbar-brand" href="#">Notebook</a>
         </div>
-        <div style="float: right">
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <div th:if="${d.Note}">
+                <a class="btn btn-outline-primary" type="submit" th:href="@{/notepad/addRecord?id1={fId}(fId=${folderId})}">Добавить запись</a>
+            </div>
             <ul class="navbar-nav me-auto mb-3 mb-lg-0">
                 <form class="input-group mb-3" action="/notepad/search" th:object="${s}" method="post">
                     <select name="search" class="form-select">
@@ -45,85 +48,67 @@
             <div class="shadow p-3 mb-5 bg-body rounded">
                 <div class="list-group">
                     <div class = "d-inline">
-                        <div th:if="${not d.Search}">
-                            <div style="margin-bottom: 5px">
-                                <div th:if="${d.AddFolder}">
-                                    <a class="list-group-item list-group-item-action active" href="/notepad">Добавить группу</a>
-                                </div>
-                                <div th:if="${not d.AddFolder}">
-                                    <a class="list-group-item list-group-item-action" href="/notepad/addFolder">Добавить группу</a>
-                                </div>
+                        <div style="margin-bottom: 5px">
+                            <div th:if="${d.AddFolder}">
+                                <a class="list-group-item list-group-item-action active" href="/notepad">Добавить группу</a>
                             </div>
-                            <div th:if="${d.Folder}">
-                                <div th:each="f: ${folder}">
-                                    <div th:if="${f.standing}">
-                                        <div style="background-color: rgb(13,110,253)">
-                                            <div class="d-flex">
-                                                <a class="list-group-item list-group-item-action active" th:href="@{/notepad?id1={nId}(nId=${f.id})}">
-                                                    <font th:text="${f.name}"></font>
-                                                </a>
-                                                <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split float-end" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <span class="visually-hidden">Toggle Dropdown</span>
-                                                </button>
-                                                <ul class="dropdown-menu">
-                                                    <li><a class="dropdown-item" th:href="@{/notepad/editFolder?id1={nId}(nId=${f.id})}">Переименовать</a></li>
-                                                    <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#ModalFolder">Удалить</button></li>
-                                                </ul>
-                                                <div class="modal fade" id="ModalFolder" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title">Удалить группу?</h5>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                Вы уверены, что хотите удалить эту группу?
-                                                                Действие невозможно будет отменить.
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-                                                                <a class="btn btn-primary" th:href="@{/notepad/delFolder?id1={nId}(nId=${f.id})}">Удалить</a>
-                                                            </div>
+                            <div th:if="${not d.AddFolder}">
+                                <a class="list-group-item list-group-item-action" href="/notepad/addFolder">Добавить группу</a>
+                            </div>
+                        </div>
+                        <div th:if="${d.Folder}">
+                            <div th:each="f: ${folder}">
+                                <div th:if="${f.standing}">
+                                    <div style="background-color: rgb(13,110,253)">
+                                        <div class="d-flex">
+                                            <a class="list-group-item list-group-item-action active" th:href="@{/notepad?id1={nId}(nId=${f.id})}">
+                                                <font th:text="${f.name}"></font>
+                                            </a>
+                                            <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split float-end" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <span class="visually-hidden">Toggle Dropdown</span>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" th:href="@{/notepad/editFolder?id1={nId}(nId=${f.id})}">Переименовать</a></li>
+                                                <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#ModalFolder">Удалить</button></li>
+                                            </ul>
+                                            <div class="modal fade" id="ModalFolder" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Удалить группу?</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            Вы уверены, что хотите удалить эту группу?
+                                                            Действие невозможно будет отменить.
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                                                            <a class="btn btn-primary" th:href="@{/notepad/delFolder?id1={nId}(nId=${f.id})}">Удалить</a>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div th:if="${d.DivNote}">
                                         <ul class="list-group-flush">
-                                            <a type="submit"  th:href="@{/notepad/addRecord?id1={fId}(fId=${folderId})}">Добавить запись</a>
                                             <div th:if="${d.Note}">
                                                 <div th:each="n: ${note}">
-                                                    ∟ . . .  <a th:href="@{/notepad?id1={fId}&id2={nId}(fId=${folderId},nId=${n.id})}" th:text="${n.name}"></a>
+                                                    <div th:if="${n.standing}">
+                                                        ∟ . . .  <a class="fw-bold" th:href="@{/notepad?id1={fId}&id2={nId}(fId=${folderId},nId=${n.id})}" th:text="${n.name}"></a>
+                                                    </div>
+                                                    <div th:if="${not n.standing}">
+                                                        ∟ . . .  <a th:href="@{/notepad?id1={fId}&id2={nId}(fId=${folderId},nId=${n.id})}" th:text="${n.name}"></a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </ul>
                                     </div>
-                                    <div th:if="${not f.standing}">
-                                        <a class="list-group-item list-group-item-action" th:href="@{/notepad?id1={nId}(nId=${f.id})}" th:text="${f.name}"></a>
-                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div th:if="${d.Search}">
-                            <div style="margin-bottom: 5px">
-                                <a class="list-group-item list-group-item-action" href="/notepad">Вернуться</a>
-                            </div>
-                            <div th:if="${not d.Note}">
-                                <div th:if="${d.Folder}">
-                                    <div th:each="f: ${folder}">
-                                        <a class="list-group-item list-group-item-action" th:href="@{/notepad/search?id1={nId}(nId=${f.id})}" th:text="${f.name}"></a>
-                                    </div>
+                                <div th:if="${not f.standing}">
+                                    <a class="list-group-item list-group-item-action" th:href="@{/notepad?id1={nId}(nId=${f.id})}" th:text="${f.name}"></a>
                                 </div>
-                            </div>
-                            <div th:if="${d.Note}">
-                                <div th:each="f: ${folder}">
-                                    <a class="list-group-item list-group-item-action active" href="#" th:text="${f.name}"></a>
-                                </div>
-                                <ul class="list-group-flush">
-                                    <div th:each="n: ${note}">
-                                        ∟ . . .  <a th:href="@{/notepad/search?id2={nId}(nId=${n.id})}" th:text="${n.name}"></a>
-                                    </div>
-                                </ul>
                             </div>
                         </div>
                     </div>
@@ -134,8 +119,8 @@
         <div class="col-8">
             <div class="shadow p-3 mb-5 bg-body rounded">
                 <div th:if="${not d.Input}">
-                    <div th:if="${d.Note}">
-                        <div th:if="${not d.Search}">
+                    <div th:if="${not d.Search}">
+                        <div th:if="${d.Note}">
                             <form th:action="@{/notepad}" th:object="${nameFolder}" method="post">
                                 <div class="form-floating">
                                     <input id="nameFolder-notInput", type="text" class="form-control" aria-label="Recipient's username" aria-describedby="button-addon2" th:field="*{name}" readonly>
@@ -143,29 +128,33 @@
                                 </div>
                             </form>
                         </div>
-                        <div th:if="${d.Search}">
-                            <div class="input-group mb-2">
-                                <input type="text" class="form-control" aria-label="Recipient's username" placeholder="Имя группы" aria-describedby="button-addon2" disabled>
+                        <div th:if="${not d.Note}">
+                            <h4>Создайте или откройте запись</h4>
+                        </div>
+                    </div>
+                    <div th:if="${d.Search}">
+                        <div class="list-group">
+                            <a href="#" class="list-group-item list-group-item-action active" aria-current="true" th:text="'Результаты поиска ' + ${request}"></a>
+                            <div th:if="${d.DivSearch}">
+                                <div th:if="${d.Note}">
+                                    <div th:each="n: ${note}">
+                                        <a th:href="@{/notepad/search?id2={nId}(nId=${n.id})}" class="list-group-item list-group-item-action">
+                                            <div class="fw-bold" th:text="${n.name}"></div>
+                                            <div class="col-9 text-truncate">
+                                                <small th:text="${n.record}"></small>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div th:if="${not d.Note}">
+                                    <div th:each="f: ${folderSearch}">
+                                        <a th:href="@{/notepad/search?id1={fId}(fId=${f.id})}" class="list-group-item list-group-item-action" th:text="${f.name}"></a>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div th:if="${not d.Note}">
-                        <div class="input-group mb-2">
-                            <input type="text" class="form-control" aria-label="Recipient's username" placeholder="Имя группы" aria-describedby="button-addon2" disabled>
-                        </div>
-                    </div>
-                    <p></p>
-                    <div class="input-group mb-2">
-                        <input type="text" class="form-control" aria-label="Recipient's username" placeholder="Имя записи" aria-describedby="button-addon2" disabled>
-                    </div>
-                    <p></p>
-                    <div class="mb-3">
-                        <textarea class="form-control" placeholder="Запись" rows="12" disabled></textarea>
-                    </div>
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <div class="d-flex">
-                            <button class="btn btn-outline-primary me-md-2" disabled>Редактировать</button>
-                            <button class="btn btn-outline-primary" disabled>Удалить</button>
+                            <div th:if="${not d.DivSearch}">
+                                <a href="#" class="list-group-item list-group-item-action">Ничего не найдено</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -173,13 +162,6 @@
                 <div th:if="${d.Input}">
 
                     <div th:if="${d.ShowNote}">
-                        <form th:action="@{/notepad}" th:object="${nameFolder}" method="post">
-                            <div class="form-floating">
-                                <input id="nameFolder-ShowNote", type="text" class="form-control" aria-label="Recipient's username" aria-describedby="button-addon2" th:field="*{name}" readonly>
-                                <label for="nameFolder-ShowNote">Имя группы</label>
-                            </div>
-                        </form>
-                        <p></p>
                         <form th:action="@{/notepad?id2={nId}(nId=${noteId})}" th:object="${n}" method="post">
                             <div class="form-floating">
                                 <input id="nameNote-ShowNote" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="button-addon2" th:field="*{name}" readonly>
@@ -221,13 +203,6 @@
                     </div>
 
                     <div th:if="${d.EditNote}">
-                        <form th:action="@{/notepad}" th:object="${nameFolder}" method="post">
-                            <div class="form-floating">
-                                <input id="nameFolder-EditNote", type="text" class="form-control" aria-label="Recipient's username" aria-describedby="button-addon2" th:field="*{name}" readonly>
-                                <label for="nameFolder-EditNote">Имя группы</label>
-                            </div>
-                        </form>
-                        <p></p>
                         <form th:action="@{/notepad/editRecord?id1={fId}&id2={nId}(fId=${folderId},nId=${noteId})}" th:object="${n}" method="post">
                             <label for="nameNote-EditNote">Имя записи</label>
                             <div class="input-group mb-2">
@@ -277,30 +252,9 @@
                                 <button class="btn btn-outline-primary" type="submit">Сохранить</button>
                             </div>
                         </form>
-                        <p></p>
-                        <div class="input-group mb-2">
-                            <input type="text" class="form-control" aria-label="Recipient's username" placeholder="Имя записи" aria-describedby="button-addon2" disabled>
-                        </div> <p></p>
-                        <p></p>
-                        <div class="mb-3">
-                            <textarea class="form-control" placeholder="Запись" rows="12" disabled></textarea>
-                        </div>
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <div class="d-flex">
-                                <button class="btn btn-outline-primary me-md-2" disabled>Редактировать</button>
-                                <button class="btn btn-outline-primary" disabled>Удалить</button>
-                            </div>
-                        </div>
                     </div>
 
                     <div th:if="${d.AddNote}">
-                        <form th:action="@{/notepad}" th:object="${nameFolder}" method="post">
-                            <div class="form-floating">
-                                <input id="nameFolder-AddNote", type="text" class="form-control" aria-label="Recipient's username" aria-describedby="button-addon2" th:field="*{name}" readonly>
-                                <label for="nameFolder-AddNote">Имя группы</label>
-                            </div>
-                        </form>
-                        <p></p>
                         <form th:action="@{/notepad/addRecord?id1={fId}(fId=${folderId})}" th:object="${n}" method="post">
                             <label for="nameNote-AddNote">Имя записи</label>
                             <div class="input-group mb-2">
@@ -333,19 +287,6 @@
                             </div>
                         </form>
                         <p></p>
-                        <div class="input-group mb-2">
-                            <input type="text" class="form-control" aria-label="Recipient's username" placeholder="Имя записи" aria-describedby="button-addon2" disabled>
-                        </div> <p></p>
-                        <p></p>
-                        <div class="mb-3">
-                            <textarea class="form-control" placeholder="Запись" rows="12" disabled></textarea>
-                        </div>
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <div class="d-flex">
-                                <button class="btn btn-outline-primary me-md-2" disabled>Редактировать</button>
-                                <button class="btn btn-outline-primary" disabled>Удалить</button>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
