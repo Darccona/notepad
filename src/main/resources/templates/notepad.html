@@ -14,8 +14,10 @@
             <a class="navbar-brand" href="#">Notebook</a>
         </div>
         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-            <div th:if="${d.Note}">
-                <a class="btn btn-outline-primary" type="submit" th:href="@{/notepad/addRecord?id1={fId}(fId=${folderId})}">Добавить запись</a>
+            <div th:if="${not d.Search}">
+                <div th:if="${d.Note}">
+                    <a class="btn btn-outline-primary" type="submit" th:href="@{/notepad/addRecord?id1={fId}(fId=${folderId})}">Добавить запись</a>
+                </div>
             </div>
             <ul class="navbar-nav me-auto mb-3 mb-lg-0">
                 <form class="input-group mb-3" action="/notepad/search" th:object="${s}" method="post">
