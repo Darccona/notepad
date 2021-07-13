@@ -1,8 +1,11 @@
 package org.darccona.model;
 
+import javax.persistence.Column;
+
 public class RecordEntity {
     private String name;
     private String date;
+    @Column(length = 16383)
     private String record;
 
     public RecordEntity(String name, String date, String record) {

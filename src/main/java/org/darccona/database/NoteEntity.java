@@ -20,7 +20,7 @@ public class NoteEntity {
     @Column(name = "DATE")
     private Date date;
 
-    @Column(name = "RECORD")
+    @Column(name = "RECORD", length = 16383)
     private String record;
 
     @Column(name = "STANDING")
